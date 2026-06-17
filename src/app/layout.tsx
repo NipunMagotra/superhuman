@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Command Center — High-Speed Email & Calendar Hub',
+  title: 'Pigeon — High-Speed Email & Calendar Hub',
   description: 'Ultra-minimalist, keyboard-first, AI-powered control panel for Gmail and Google Calendar.',
   keywords: ['gmail', 'google calendar', 'ai assistant', 'keyboard shortcuts', 'superhuman style', 'inbox zero'],
 };

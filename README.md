@@ -1,4 +1,4 @@
-# Clearlyy Command Center
+# Pigeon Command Center
 
 An ultra-minimalist, keyboard-first, high-speed unified workspace client for Gmail and Google Calendar. Built with Next.js (App Router), Tailwind CSS v4, Corsair SDK, OpenAI, and Supabase (Postgres + pgvector cache).
 

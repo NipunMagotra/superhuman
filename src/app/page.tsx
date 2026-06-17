@@ -92,7 +92,7 @@ export default function LandingPage() {
       <header className="w-full max-w-5xl mx-auto px-8 h-24 flex items-center justify-between relative z-50">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs tracking-[0.25em] text-[#94a3b8] uppercase font-semibold">
-            CLEARLYY // CC
+            PIGEON // CC
           </span>
         </div>
 
@@ -232,7 +232,7 @@ export default function LandingPage() {
                 <input 
                   type="text" 
                   className="bg-transparent text-[#f8fafc] outline-none w-full"
-                  defaultValue="poweruser@clearlyy.com"
+                  defaultValue="poweruser@pigeon.com"
                 />
               </div>
               <div className="flex border-b border-[#1e293b]/25 pb-2.5">
@@ -309,7 +309,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="w-full max-w-5xl mx-auto px-8 h-20 flex items-center justify-between border-t border-[#1e293b]/20 font-mono text-[9px] text-[#64748b] relative z-50">
-        <div>© 2026 CLEARLYY INC.</div>
+        <div>© 2026 PIGEON LABS INC.</div>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
           SECURE DIRECT GOOGLE OAUTH
