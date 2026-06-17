@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { Sparkles, X, Send, Bot, User, Loader2 } from 'lucide-react';
 
@@ -10,9 +10,21 @@ interface AIChatBarProps {
 }
 
 export function AIChatBar({ isOpen, onClose }: AIChatBarProps) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = (useChat as any)({
-    api: '/api/chat',
-  });
+  const [input, setInput] = useState('');
+  const { messages, sendMessage, status } = useChat();
+
+  const isLoading = status === 'streaming' || status === 'submitted';
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    sendMessage({ text: input });
+    setInput('');
+  };
   
   const scrollRef = useRef<HTMLDivElement>(null);
 

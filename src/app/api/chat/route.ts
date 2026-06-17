@@ -62,7 +62,7 @@ Here are some guidelines:
       tools,
     });
 
-    return (result as any).toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (err: any) {
     console.error('Error in AI chat route:', err);
     return new Response(JSON.stringify({ error: err.message }), {
