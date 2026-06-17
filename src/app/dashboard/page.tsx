@@ -8,7 +8,7 @@ import { ComposeModal } from '@/components/email/ComposeModal';
 import { CalendarView } from '@/components/calendar/CalendarView';
 import { EventModal } from '@/components/calendar/EventModal';
 import { SearchBar } from '@/components/ui/SearchBar';
-import { Loader2 } from 'lucide-react';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
@@ -261,9 +261,7 @@ export default function DashboardPage() {
       isSyncing={isSyncing}
     >
       {isLoading ? (
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-accent-blue" />
-        </div>
+        <LoadingScreen className="flex-1 min-h-0" message="Syncing inbox…" />
       ) : currentView === 'inbox' ? (
         /* Inbox Split View Layout */
         <div className="flex-grow flex h-full min-w-0">

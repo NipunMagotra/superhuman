@@ -171,11 +171,6 @@ export default function LandingPage() {
 
             {/* Left */}
             <div className="flex flex-col items-start max-w-lg">
-              <div className="flex items-center gap-2 text-[12px] font-mono text-text-dim mb-6 animate-enter delay-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                v0.1 release candidate
-              </div>
-
               <h1 className="text-[2.75rem] sm:text-[3.5rem] font-display font-medium leading-[1.1] tracking-tight text-text-primary mb-5 animate-enter delay-2">
                 The email client you
                 <br />
@@ -359,17 +354,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="border-t border-border-primary">
-        <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between text-[11px] text-text-dim font-mono">
-          <span>© 2026 Pigeon</span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-            operational
-          </span>
-        </div>
-      </footer>
 
       {/* ── Overlays ── */}
 
