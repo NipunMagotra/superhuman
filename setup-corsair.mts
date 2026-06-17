@@ -33,7 +33,18 @@ async function main() {
   try {
     const { corsair } = await import('./src/lib/corsair.js');
     const { setupCorsair } = await import('corsair/setup');
-    const result = await setupCorsair(corsair);
+    const result = await setupCorsair(corsair, {
+      credentials: {
+        gmail: {
+          client_id: process.env.GOOGLE_CLIENT_ID || '',
+          client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+        },
+        googlecalendar: {
+          client_id: process.env.GOOGLE_CLIENT_ID || '',
+          client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+        }
+      }
+    });
     console.log('Setup output:\n', result);
   } catch (error) {
     console.error('Setup failed:', error);
