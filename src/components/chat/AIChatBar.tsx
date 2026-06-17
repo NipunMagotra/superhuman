@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { Sparkles, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import { Sparkles, X, Send, Bot, User } from 'lucide-react';
 
 interface AIChatBarProps {
   isOpen: boolean;
@@ -131,7 +131,7 @@ export function AIChatBar({ isOpen, onClose }: AIChatBarProps) {
                               {isDone ? (
                                 <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
                               ) : (
-                                <Loader2 className="w-3 h-3 animate-spin text-accent-blue" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
                               )}
                               <span>
                                 {isDone ? 'Finished' : 'Running'} tool:{' '}

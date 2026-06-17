@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Users, FileText, Trash2, Check, Loader2 } from 'lucide-react';
+import { X, Calendar, MapPin, Users, FileText, Trash2, Check } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Event {
@@ -270,10 +270,7 @@ export function EventModal({
                     Scheduled!
                   </>
                 ) : isSaving ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Saving...
-                  </>
+                  'Saving...'
                 ) : (
                   'Schedule'
                 )}

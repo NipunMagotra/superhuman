@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Calendar, ArrowLeft, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { Mail, Calendar, ArrowLeft, CheckCircle2, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
@@ -144,7 +144,7 @@ export default function AuthPage() {
               </div>
               
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-text-dim" />
+                <span className="text-[10px] text-text-dim">Checking…</span>
               ) : connections.gmail === 'connected' ? (
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-sm flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -206,7 +206,7 @@ export default function AuthPage() {
               </div>
               
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-text-dim" />
+                <span className="text-[10px] text-text-dim">Checking…</span>
               ) : connections.googlecalendar === 'connected' ? (
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-sm flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />

@@ -360,7 +360,6 @@ export default function LandingPage() {
       {/* Redirect */}
       {redirecting && (
         <div className="fixed inset-0 bg-bg-primary/95 z-[60] flex flex-col items-center justify-center animate-enter">
-          <div className="w-6 h-6 border-2 border-border-primary border-t-text-primary rounded-full animate-spin mb-4" />
           <span className="text-[12px] text-text-muted font-mono">{redirecting}</span>
         </div>
       )}

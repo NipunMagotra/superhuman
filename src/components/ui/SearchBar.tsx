@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, Loader2, X } from 'lucide-react';
+import { Search, Sparkles, X } from 'lucide-react';
 
 interface SearchBarProps {
   onSemanticResults: (results: any[] | null) => void;
@@ -102,7 +102,7 @@ export function SearchBar({ onSemanticResults, onKeywordChange, inputRef }: Sear
         />
 
         {isLoading ? (
-          <Loader2 className="w-4 h-4 animate-spin text-accent-blue mr-2" />
+          <span className="text-[10px] text-text-dim mr-2">…</span>
         ) : query ? (
           <button type="button" onClick={handleClear} className="text-text-dim hover:text-text-secondary mr-2 cursor-pointer">
             <X className="w-4 h-4" />

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, X, Loader2, Check } from 'lucide-react';
+import { Send, X, Check } from 'lucide-react';
 import { useKeyboardShortcuts } from '../command-palette/useKeyboardShortcuts';
 
 interface ComposeModalProps {
@@ -149,10 +149,7 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
                   Sent!
                 </>
               ) : isSending ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending...
-                </>
+                'Sending...'
               ) : (
                 <>
                   <Send className="w-4 h-4" />

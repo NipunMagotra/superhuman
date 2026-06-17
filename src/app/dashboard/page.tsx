@@ -8,7 +8,6 @@ import { ComposeModal } from '@/components/email/ComposeModal';
 import { CalendarView } from '@/components/calendar/CalendarView';
 import { EventModal } from '@/components/calendar/EventModal';
 import { SearchBar } from '@/components/ui/SearchBar';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
@@ -261,7 +260,9 @@ export default function DashboardPage() {
       isSyncing={isSyncing}
     >
       {isLoading ? (
-        <LoadingScreen className="flex-1 min-h-0" message="Syncing inbox…" />
+        <div className="flex-1 flex items-center justify-center">
+          <span className="text-sm text-text-muted">Loading…</span>
+        </div>
       ) : currentView === 'inbox' ? (
         /* Inbox Split View Layout */
         <div className="flex-grow flex h-full min-w-0">
