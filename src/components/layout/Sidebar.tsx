@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Mail, Calendar, Settings, Sparkles, Keyboard, Command } from 'lucide-react';
+import { PigeonLogo } from '../ui/PigeonLogo';
 
 interface SidebarProps {
   currentView: 'inbox' | 'calendar' | 'auth';
@@ -22,10 +23,8 @@ export function Sidebar({
     <aside className="w-16 h-screen flex flex-col items-center py-6 bg-bg-secondary border-r border-border-primary justify-between">
       {/* Upper Section (Brand / Logo) */}
       <div className="flex flex-col items-center gap-8">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent-red to-accent-blue p-0.5 flex items-center justify-center shadow-lg shadow-accent-blue/20">
-          <div className="w-full h-full bg-bg-secondary rounded-[6px] flex items-center justify-center">
-            <Command className="w-4 h-4 text-accent-blue" />
-          </div>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
+          <PigeonLogo size={32} />
         </div>
 
         {/* Navigation Actions */}
