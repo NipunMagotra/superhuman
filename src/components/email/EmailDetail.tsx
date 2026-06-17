@@ -140,7 +140,7 @@ export function EmailDetail({
               <div>
                 To:{' '}
                 <span className="text-text-dim">
-                  {email.to_addresses.map((t) => t.name || t.address).join(', ')}
+                  {(email.to_addresses || []).map((t) => t.name || t.address).join(', ') || '—'}
                 </span>
               </div>
             </div>

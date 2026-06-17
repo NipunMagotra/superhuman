@@ -16,7 +16,6 @@ interface Email {
   snippet: string;
   is_read: boolean;
   is_starred: boolean;
-  priority_score: number;
   received_at: string;
 }
 
@@ -108,14 +107,13 @@ export function EmailList({
           </span>
           <span className="text-xs text-text-dim/60">
             {folder === 'INBOX'
-              ? "Press 'c' to compose or wait for sync"
-              : 'Sync your mailbox to load emails'}
+              ? "Press 'c' to compose or hit Refresh to reload"
+              : 'Hit Refresh to load emails from Gmail'}
           </span>
         </div>
       ) : (
         emails.map((email, idx) => {
           const isSelected = email.gmail_id === selectedEmailId;
-          const isHighPriority = email.priority_score >= 0.7;
 
           return (
             <div
@@ -141,12 +139,6 @@ export function EmailList({
                 >
                   <Star className="w-3.5 h-3.5 fill-current" />
                 </button>
-                {isHighPriority && (
-                  <span 
-                    className="w-2 h-2 rounded-full bg-accent-red animate-pulse" 
-                    title={`Priority: ${Math.round(email.priority_score * 100)}%`}
-                  />
-                )}
               </div>
 
               {/* Sender & Email Content */}

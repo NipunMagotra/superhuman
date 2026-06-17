@@ -131,16 +131,16 @@ export default function LandingPage() {
   }, []);
 
   const logs = [
-    { t: '17:56:01', k: 'inbox.sync', v: 'fetched 3 new messages' },
-    { t: '17:56:02', k: 'vector.embed', v: 'generated 1536d embedding' },
-    { t: '17:56:05', k: 'webhook', v: 'listening for push events' },
-    { t: '17:56:08', k: 'priority', v: 'scored draft at 0.88' },
+    { t: '17:56:01', k: 'inbox.fetch', v: 'loaded 12 messages' },
+    { t: '17:56:02', k: 'gmail.api', v: 'connected via OAuth' },
+    { t: '17:56:05', k: 'calendar.fetch', v: 'loaded 4 events' },
+    { t: '17:56:08', k: 'reply.sent', v: 'message delivered' },
   ];
 
   const results = [
-    { id: '1', title: 'Product Launch Update', sub: 'Meeting schedule with the team for Q3 launch...', score: 98 },
-    { id: '2', title: 'Flight Reservation', sub: 'Confirmation details for upcoming travel...', score: 87 },
-    { id: '3', title: 'Calendar Sync Fixed', sub: 'Corsair token refresh now working correctly...', score: 76 },
+    { id: '1', title: 'Product Launch Update', sub: 'Meeting schedule with the team for Q3 launch...' },
+    { id: '2', title: 'Flight Reservation', sub: 'Confirmation details for upcoming travel...' },
+    { id: '3', title: 'Calendar Sync Fixed', sub: 'Corsair token refresh now working correctly...' },
   ].filter(r => !searchQuery || r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.sub.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
@@ -178,7 +178,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-[15px] text-text-muted leading-relaxed mb-8 animate-enter delay-3">
-                Keyboard-first Gmail &amp; Calendar. Semantic search that understands what you mean.
+                Keyboard-first Gmail &amp; Calendar. Fast search and shortcuts.
                 Secure by default. Feels like it reads your mind.
               </p>
 
@@ -201,7 +201,7 @@ export default function LandingPage() {
 
               {/* Tiny social proof — not fake metrics */}
               <p className="text-[12px] text-text-dim mt-6 font-mono animate-enter delay-5">
-                IMAP + GCal sync · pgvector search · AES-256 encrypted
+                Gmail + GCal · OAuth encrypted · Keyboard shortcuts
               </p>
             </div>
 
@@ -252,24 +252,16 @@ export default function LandingPage() {
             <div className="md:col-span-2 card p-5 animate-enter delay-2">
               <div className="flex items-center gap-2 mb-3">
                 <Search className="w-4 h-4 text-accent" />
-                <h3 className="text-[14px] font-semibold text-text-primary">Semantic Search</h3>
+                <h3 className="text-[14px] font-semibold text-text-primary">Fast Search</h3>
               </div>
               <p className="text-[13px] text-text-muted leading-relaxed mb-4">
-                Type what you mean, not exact keywords. Your emails are embedded as vectors and matched by meaning — &quot;that meeting about the product&quot; finds it instantly.
+                Filter your inbox by sender, subject, or snippet. Press <kbd>/</kbd> to jump to the search bar from anywhere.
               </p>
               <div className="bg-bg-tertiary rounded-lg p-3 font-mono text-[11px] space-y-1.5">
-                <div className="flex justify-between text-text-dim">
-                  <span>query</span><span>cosine distance</span>
-                </div>
-                <div className="flex justify-between text-text-secondary">
-                  <span>&quot;product roadmap meeting&quot;</span><span className="text-text-dim">→ 1536 vectors</span>
-                </div>
-                <div className="flex justify-between text-text-muted pl-3 border-l border-border-primary">
-                  <span>↳ &quot;flight tickets&quot;</span><span className="text-text-dim">0.42</span>
-                </div>
-                <div className="flex justify-between text-text-primary pl-3 border-l-2 border-accent font-medium">
-                  <span>↳ &quot;roadmap sync discussion&quot;</span><span className="text-accent">0.94</span>
-                </div>
+                <div className="text-text-dim">filter: product roadmap</div>
+                <div className="text-text-secondary pl-3 border-l border-border-primary">↳ Product Launch Update</div>
+                <div className="text-text-secondary pl-3 border-l border-border-primary">↳ Q3 roadmap sync notes</div>
+                <div className="text-text-muted pl-3 border-l border-border-primary">↳ Re: roadmap discussion</div>
               </div>
             </div>
 
@@ -310,17 +302,17 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Live sync — wide */}
+            {/* Direct API — wide */}
             <div className="md:col-span-2 card p-5 animate-enter delay-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <h3 className="text-[14px] font-semibold text-text-primary">Live Sync</h3>
+                  <h3 className="text-[14px] font-semibold text-text-primary">Live from Gmail</h3>
                 </div>
-                <span className="text-[10px] text-text-dim font-mono">webhook · no polling</span>
+                <span className="text-[10px] text-text-dim font-mono">direct API · no cache</span>
               </div>
               <p className="text-[13px] text-text-muted leading-relaxed mb-4">
-                Webhooks push new mail the instant it arrives. No polling, no delays — your inbox is always current.
+                Emails and events load straight from Google. Hit refresh anytime to pull the latest.
               </p>
               <div className="bg-bg-tertiary rounded-lg p-3 font-mono text-[11px] space-y-1">
                 {logs.map((l, i) => (
@@ -392,7 +384,7 @@ export default function LandingPage() {
                 <span className="text-text-dim w-10 shrink-0">Sub</span>
                 <input type="text" className="bg-transparent text-text-primary outline-none w-full" defaultValue="Unified Inbox via Corsair SDK" />
               </div>
-              <textarea rows={4} className="bg-transparent text-text-secondary outline-none resize-none w-full leading-relaxed" defaultValue={`Hey,\n\nLocal cache and pgvector embeddings are syncing cleanly.\n\nLaunch the client to test outbound connections.`} />
+              <textarea rows={4} className="bg-transparent text-text-secondary outline-none resize-none w-full leading-relaxed" defaultValue={`Hey,\n\nJust connected Gmail and everything looks good.\n\nLaunch the dashboard to try it out.`} />
             </div>
             <div className="px-5 py-3 border-t border-border-primary flex justify-end">
               <button onClick={() => go('/dashboard', 'Dashboard', 'd')} className="text-[12px] font-medium text-white bg-accent hover:opacity-90 px-4 py-2 rounded-lg press cursor-pointer transition-opacity duration-100">
@@ -419,19 +411,16 @@ export default function LandingPage() {
               <input
                 id="search-input"
                 type="text"
-                placeholder="Search by meaning..."
+                placeholder="Search by subject or sender..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="bg-bg-tertiary w-full px-3.5 py-2.5 border border-border-primary rounded-lg text-[13px] text-text-primary placeholder:text-text-dim outline-none focus:border-border-hover transition-colors duration-100"
               />
               <div className="mt-3 space-y-2 max-h-48 overflow-y-auto">
                 {results.length > 0 ? results.map(r => (
-                  <div key={r.id} className="p-3 bg-bg-tertiary border border-border-primary rounded-lg flex justify-between items-center hover:border-border-hover transition-colors duration-100">
-                    <div>
-                      <div className="text-[13px] font-medium text-text-primary">{r.title}</div>
-                      <div className="text-[12px] text-text-muted mt-0.5">{r.sub}</div>
-                    </div>
-                    <span className="text-[11px] font-mono text-text-dim ml-3 shrink-0">{r.score}%</span>
+                  <div key={r.id} className="p-3 bg-bg-tertiary border border-border-primary rounded-lg hover:border-border-hover transition-colors duration-100">
+                    <div className="text-[13px] font-medium text-text-primary">{r.title}</div>
+                    <div className="text-[12px] text-text-muted mt-0.5">{r.sub}</div>
                   </div>
                 )) : (
                   <p className="text-[13px] text-text-dim text-center py-6">No results</p>

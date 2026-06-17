@@ -9,22 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@ai-sdk/mcp": "^1.0.51",
-    "@ai-sdk/openai": "^3.0.71",
-    "@ai-sdk/react": "^3.0.208",
     "@corsair-dev/gmail": "^0.1.4",
     "@corsair-dev/googlecalendar": "^0.1.5",
-    "@corsair-dev/mcp": "^0.1.22",
-    "@supabase/supabase-js": "^2.108.2",
     "@types/pg": "^8.20.0",
-    "ai": "^6.0.206",
     "cmdk": "^1.1.1",
     "corsair": "^0.1.76",
     "date-fns": "^4.4.0",
-    "kysely": "^0.28.17",
     "lucide-react": "^1.20.0",
     "next": "16.2.9",
-    "openai": "^6.42.0",
     "pg": "^8.21.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"

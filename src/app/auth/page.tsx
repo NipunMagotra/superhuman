@@ -56,7 +56,7 @@ export default function AuthPage() {
         method: 'POST',
       });
       if (res.ok) {
-        setMessage(`Successfully disconnected ${plugin === 'gmail' ? 'Gmail' : 'Google Calendar'} and wiped local cache.`);
+        setMessage(`Successfully disconnected ${plugin === 'gmail' ? 'Gmail' : 'Google Calendar'}.`);
         await fetchConnections();
       } else {
         const data = await res.json();
@@ -93,12 +93,12 @@ export default function AuthPage() {
           className="flex items-center gap-1.5 text-xs text-text-muted hover:text-text-primary transition-colors mb-6 group w-fit"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Back to Command Center
+          Back to Dashboard
         </Link>
 
         <h1 className="text-xl font-bold mb-2 text-text-primary">Integrations & Settings</h1>
         <p className="text-xs text-text-dim mb-6 leading-relaxed">
-          Link your Google workspace accounts to activate real-time syncing for emails and calendar schedules with the AI Command Center.
+          Link your Google workspace accounts to read email and manage your calendar in Pigeon.
         </p>
 
         {/* Informative Banner about Shared Tenant */}
@@ -139,7 +139,7 @@ export default function AuthPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary">Gmail Integration</h3>
-                  <p className="text-[11px] text-text-dim mt-0.5">Read, search, categorize, and draft emails</p>
+                  <p className="text-[11px] text-text-dim mt-0.5">Read, search, compose, and manage emails</p>
                 </div>
               </div>
               
@@ -160,8 +160,8 @@ export default function AuthPage() {
 
             <p className="text-[11px] text-text-dim leading-relaxed bg-bg-primary/30 p-3 rounded-lg border border-border-primary/20">
               {connections.gmail === 'connected' 
-                ? "Your Gmail is connected. The AI agent can sync inboxes, detect high priority emails, and write drafts."
-                : "No active Gmail connection found. Link your account to authorize the AI Command Center."}
+                ? "Your Gmail is connected. You can read, search, compose, and manage emails from the dashboard."
+                : "No active Gmail connection found. Link your account to get started."}
             </p>
 
             <div className="flex items-center gap-3 mt-1">
@@ -222,8 +222,8 @@ export default function AuthPage() {
 
             <p className="text-[11px] text-text-dim leading-relaxed bg-bg-primary/30 p-3 rounded-lg border border-border-primary/20">
               {connections.googlecalendar === 'connected'
-                ? "Your Google Calendar is connected. The AI agent can manage meeting invites and schedule/cancel events."
-                : "No active Google Calendar connection. Link your account to manage events via the Command Center."}
+                ? "Your Google Calendar is connected. You can view, create, and manage events from the dashboard."
+                : "No active Google Calendar connection. Link your account to manage events from the dashboard."}
             </p>
 
             <div className="flex items-center gap-3 mt-1">

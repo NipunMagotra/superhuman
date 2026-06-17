@@ -31,12 +31,10 @@ export default function DashboardPage() {
   const [selectedDateForEvent, setSelectedDateForEvent] = useState<Date>(new Date());
 
   const [isComposeOpen, setIsComposeOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Search states
   const [keywordQuery, setKeywordQuery] = useState('');
-  const [semanticResults, setSemanticResults] = useState<any[] | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Unread count is tracked separately so folder switches don't affect the badge
@@ -97,39 +95,29 @@ export default function DashboardPage() {
     setEmailFolder(folder);
     setSelectedEmail(null);
     setKeywordQuery('');
-    setSemanticResults(null);
     fetchEmails(folder);
   }, [fetchEmails]);
 
-  // Sync action trigger
-  const handleSync = async () => {
-    setIsSyncing(true);
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
     try {
-      // 1. Sync emails
-      const emailRes = await fetch('/api/emails/sync', { method: 'POST' });
-      await emailRes.json();
-      
-      // 2. Refetch emails & calendar
       await Promise.all([fetchEmails(), fetchCalendar(), fetchUnreadCount()]);
     } catch (err) {
-      console.error('Sync failed:', err);
+      console.error('Refresh failed:', err);
     } finally {
-      setIsSyncing(false);
+      setIsRefreshing(false);
     }
   };
 
-  // 2. Filter emails by active search state
-  const displayedEmails = semanticResults !== null
-    ? semanticResults
-    : emails.filter((email) => {
+  const displayedEmails = emails.filter((email) => {
         const query = keywordQuery.toLowerCase();
         return (
           email.subject?.toLowerCase().includes(query) ||
           email.from_name?.toLowerCase().includes(query) ||
           email.from_address?.toLowerCase().includes(query) ||
           email.snippet?.toLowerCase().includes(query)
-        );
-      });
+      );
+  });
 
   // 3. Handlers for Email Actions
   const handleArchive = async (id: string) => {
@@ -283,8 +271,8 @@ export default function DashboardPage() {
       onCompose={() => setIsComposeOpen(true)}
       onSearchFocus={() => searchInputRef.current?.focus()}
       unreadCount={unreadCount}
-      onSync={handleSync}
-      isSyncing={isSyncing}
+      onRefresh={handleRefresh}
+      isRefreshing={isRefreshing}
     >
       {isLoading ? (
         <div className="flex-1 flex items-center justify-center">
@@ -300,7 +288,6 @@ export default function DashboardPage() {
               <SearchBar
                 inputRef={searchInputRef}
                 onKeywordChange={setKeywordQuery}
-                onSemanticResults={setSemanticResults}
               />
             </div>
             
@@ -308,9 +295,17 @@ export default function DashboardPage() {
               emails={displayedEmails}
               folder={emailFolder}
               selectedEmailId={selectedEmail?.gmail_id || null}
-              onSelectEmail={(email) => {
+              onSelectEmail={async (email) => {
                 setSelectedEmail(email);
-                // Mark email read in background
+                try {
+                  const res = await fetch(`/api/emails/${email.gmail_id}`);
+                  const full = await res.json();
+                  if (full.gmail_id) {
+                    setSelectedEmail(full);
+                  }
+                } catch (err) {
+                  console.error('Failed to load email detail:', err);
+                }
                 if (!email.is_read) {
                   fetch(`/api/emails/${email.gmail_id}`, {
                     method: 'PATCH',

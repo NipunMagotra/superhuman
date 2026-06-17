@@ -88,7 +88,7 @@ export function CommandPalette({ onNavigate, onFolderChange, onCompose, onSearch
               </Command.Item>
               <Command.Item onSelect={() => runCommand(onSearchFocus)}>
                 <Search className="w-4 h-4 mr-2 text-accent-red" />
-                <span>Focus Semantic Search</span>
+                <span>Focus Search</span>
                 <kbd className="ml-auto text-xs px-1.5 py-0.5 rounded bg-bg-tertiary border border-border-primary text-text-dim">/</kbd>
               </Command.Item>
             </Command.Group>

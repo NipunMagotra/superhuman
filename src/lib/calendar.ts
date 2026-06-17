@@ -9,6 +9,21 @@ export interface CalendarEventPayload {
   attendees?: { email: string; displayName?: string; responseStatus?: string }[];
 }
 
+export function mapGoogleEvent(ev: any) {
+  return {
+    id: ev.id,
+    gcal_id: ev.id,
+    summary: ev.summary || '(No Title)',
+    description: ev.description || '',
+    location: ev.location || '',
+    start_time: ev.start?.dateTime || ev.start?.date || '',
+    end_time: ev.end?.dateTime || ev.end?.date || '',
+    attendees: ev.attendees || [],
+    status: ev.status || 'confirmed',
+    html_link: ev.htmlLink || '',
+  };
+}
+
 export async function listCalendarEvents(timeMin?: string, timeMax?: string, maxResults = 250) {
   const response = await corsair.googlecalendar.api.events.getMany({
     calendarId: 'primary',

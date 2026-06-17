@@ -62,8 +62,6 @@ function buildMimeMessage({
 }
 
 export async function listGmailEmails(q?: string, maxResults = 20) {
-  // Call Corsair plugin api
-  // corsair.gmail.api.messages.list({ q, maxResults })
   const response = await corsair.gmail.api.messages.list({
     userId: 'me',
     q,
@@ -74,8 +72,6 @@ export async function listGmailEmails(q?: string, maxResults = 20) {
 }
 
 export async function getGmailEmailDetail(id: string) {
-  // Call Corsair plugin api
-  // corsair.gmail.api.messages.get({ id })
   const message = await corsair.gmail.api.messages.get({
     userId: 'me',
     id,
@@ -150,4 +146,103 @@ export async function modifyGmailEmailLabels(id: string, addLabelIds?: string[],
     addLabelIds,
     removeLabelIds,
   });
+}
+
+function parseHeader(headers: { name: string; value: string }[], name: string) {
+  return headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+}
+
+function parseAddressList(header: string) {
+  if (!header) return [];
+  return header.split(',').map((t: string) => {
+    const addr = t.match(/<([^>]+)>/)?.[1] || t.trim();
+    const name = t.split('<')[0]?.replace(/"/g, '').trim() || '';
+    return { address: addr, name: name || undefined };
+  }).filter((t) => t.address);
+}
+
+export function parseMimeBody(part: any): { text: string; html: string } {
+  let text = '';
+  let html = '';
+  if (!part) return { text, html };
+
+  if (part.mimeType === 'text/plain' && part.body?.data) {
+    text = Buffer.from(part.body.data, 'base64').toString('utf8');
+  } else if (part.mimeType === 'text/html' && part.body?.data) {
+    html = Buffer.from(part.body.data, 'base64').toString('utf8');
+  } else if (part.parts) {
+    part.parts.forEach((p: any) => {
+      const res = parseMimeBody(p);
+      if (res.text) text += res.text + '\n';
+      if (res.html) html += res.html + '\n';
+    });
+  }
+  return { text, html };
+}
+
+export function labelToGmailQuery(label: string): string {
+  switch (label) {
+    case 'INBOX':
+      return 'in:inbox';
+    case 'SENT':
+      return 'in:sent';
+    case 'ARCHIVED':
+      return '-in:inbox -in:trash -in:drafts';
+    case 'STARRED':
+      return 'is:starred';
+    case 'TRASH':
+      return 'in:trash';
+    default:
+      return 'in:inbox';
+  }
+}
+
+export function parseGmailMessage(detail: any, options?: { includeBody?: boolean }) {
+  const headers = detail.payload?.headers || [];
+  const subject = parseHeader(headers, 'subject') || '(No Subject)';
+  const fromHeader = parseHeader(headers, 'from');
+  const fromName = fromHeader.split('<')[0]?.replace(/"/g, '').trim() || fromHeader;
+  const fromAddress = fromHeader.match(/<([^>]+)>/)?.[1] || fromHeader;
+  const toHeader = parseHeader(headers, 'to');
+  const toAddresses = parseAddressList(toHeader);
+  const labels = detail.labelIds || [];
+  const isRead = !labels.includes('UNREAD');
+  const isStarred = labels.includes('STARRED');
+  const receivedAt = detail.internalDate
+    ? new Date(parseInt(detail.internalDate, 10)).toISOString()
+    : new Date().toISOString();
+
+  let bodyText = '';
+  let bodyHtml = '';
+  if (options?.includeBody !== false) {
+    const parsed = parseMimeBody(detail.payload);
+    bodyText = parsed.text || detail.snippet || '';
+    bodyHtml = parsed.html || `<div style="font-family: sans-serif; white-space: pre-wrap;">${bodyText}</div>`;
+  }
+
+  return {
+    gmail_id: detail.id,
+    thread_id: detail.threadId,
+    from_address: fromAddress,
+    from_name: fromName,
+    to_addresses: toAddresses,
+    subject,
+    snippet: detail.snippet || '',
+    body_text: bodyText,
+    body_html: bodyHtml,
+    labels,
+    is_read: isRead,
+    is_starred: isStarred,
+    received_at: receivedAt,
+  };
+}
+
+export async function getGmailMessageSummary(id: string) {
+  const message = await corsair.gmail.api.messages.get({
+    userId: 'me',
+    id,
+    format: 'metadata',
+    metadataHeaders: ['From', 'To', 'Subject', 'Date'],
+  });
+  return parseGmailMessage(message, { includeBody: false });
 }

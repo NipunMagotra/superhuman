@@ -1,58 +1,38 @@
 import { NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase';
-import { sendGmailEmail } from '@/lib/gmail';
+import {
+  listGmailEmails,
+  sendGmailEmail,
+  getGmailMessageSummary,
+  labelToGmailQuery,
+} from '@/lib/gmail';
 
-// GET: Retrieve cached emails from Supabase
+// GET: List emails directly from Gmail
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const label = searchParams.get('label') || 'INBOX'; // e.g., 'INBOX', 'SENT', 'ARCHIVED', 'TRASH', 'STARRED'
+    const label = searchParams.get('label') || 'INBOX';
     const limit = parseInt(searchParams.get('limit') || '50', 10);
-    const offset = parseInt(searchParams.get('offset') || '0', 10);
-    const priorityFilter = searchParams.get('priority') === 'true'; // filter priority >= 0.7
 
-    let query = supabaseServer
-      .from('cached_emails')
-      .select('*', { count: 'exact' });
+    const query = labelToGmailQuery(label);
+    const messageList = await listGmailEmails(query, limit);
 
-    // Handle filter parameters
-    if (label === 'STARRED') {
-      query = query.eq('is_starred', true);
-    } else if (label === 'TRASH') {
-      query = query.contains('labels', ['TRASH']);
-    } else if (label === 'ARCHIVED') {
-      // Archived = not in Inbox, Trash, or Drafts
-      query = query
-        .not('labels', 'cs', '{INBOX}')
-        .not('labels', 'cs', '{TRASH}')
-        .not('labels', 'cs', '{DRAFT}');
-    } else {
-      // For general labels (e.g. INBOX, SENT), verify it is in labels array and NOT in TRASH
-      query = query.contains('labels', [label]).not('labels', 'cs', '{TRASH}');
-    }
-
-    if (priorityFilter) {
-      // High priority emails
-      query = query.gte('priority_score', 0.7);
-    }
-
-    // Default sorting: priority_score desc, received_at desc
-    query = query
-      .order('priority_score', { ascending: false })
-      .order('received_at', { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    const { data, error, count } = await query;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const emails = (
+      await Promise.all(
+        (messageList || []).map(async (msg) => {
+          if (!msg.id) return null;
+          try {
+            return await getGmailMessageSummary(msg.id);
+          } catch {
+            return null;
+          }
+        })
+      )
+    ).filter(Boolean);
 
     return NextResponse.json({
-      emails: data || [],
-      count: count || 0,
+      emails,
+      count: emails.length,
       limit,
-      offset,
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

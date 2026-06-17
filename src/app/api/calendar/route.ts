@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { listCalendarEvents, createCalendarEvent } from '@/lib/calendar';
-import { supabaseServer } from '@/lib/supabase';
+import { listCalendarEvents, createCalendarEvent, mapGoogleEvent } from '@/lib/calendar';
 
-// GET: List calendar events
+// GET: List calendar events from Google Calendar
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,34 +9,7 @@ export async function GET(request: Request) {
     const timeMax = searchParams.get('timeMax') || undefined;
 
     const events = await listCalendarEvents(timeMin, timeMax);
-
-    // Sync to local cache in background/opportunistically
-    try {
-      for (const ev of events) {
-        if (!ev.id || !ev.start?.dateTime || !ev.end?.dateTime) continue;
-        await supabaseServer.from('cached_events').upsert(
-          {
-            gcal_id: ev.id,
-            summary: ev.summary || '(No Title)',
-            description: ev.description || '',
-            location: ev.location || '',
-            start_time: ev.start.dateTime,
-            end_time: ev.end.dateTime,
-            attendees: ev.attendees || [],
-            status: ev.status || 'confirmed',
-            html_link: ev.htmlLink || '',
-            updated_at: new Date().toISOString(),
-          },
-          {
-            onConflict: 'gcal_id',
-          }
-        );
-      }
-    } catch (dbErr) {
-      console.error('Failed to update calendar event cache:', dbErr);
-    }
-
-    return NextResponse.json({ events });
+    return NextResponse.json({ events: events.map(mapGoogleEvent) });
   } catch (err: any) {
     console.error('Error listing calendar events:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -66,7 +38,7 @@ export async function POST(request: Request) {
       attendees,
     });
 
-    return NextResponse.json({ success: true, event: newEvent });
+    return NextResponse.json({ success: true, event: mapGoogleEvent(newEvent) });
   } catch (err: any) {
     console.error('Error creating calendar event:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
