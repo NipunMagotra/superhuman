@@ -9,7 +9,9 @@ export async function GET(request: Request) {
     const state = searchParams.get('state');
     const plugin = searchParams.get('plugin'); // e.g. 'gmail' or 'googlecalendar'
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const requestUrl = new URL(request.url);
+    const envUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+    const appUrl = envUrl || requestUrl.origin;
     const redirectUri = `${appUrl}/api/auth/corsair`;
 
     // 1. Handle OAuth Callback
@@ -45,7 +47,9 @@ export async function GET(request: Request) {
   } catch (err: any) {
     console.error('Error in OAuth route:', err);
     // Redirect to auth error page
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const requestUrl = new URL(request.url);
+    const envUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+    const appUrl = envUrl || requestUrl.origin;
     return NextResponse.redirect(`${appUrl}/auth?error=${encodeURIComponent(err.message || String(err))}`);
   }
 }
