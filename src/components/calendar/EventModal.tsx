@@ -232,7 +232,7 @@ export function EventModal({
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="flex items-center gap-1 text-xs text-accent-red hover:underline disabled:opacity-50 active-press"
+                className="flex items-center gap-1 text-xs text-red-600 hover:text-red-500 hover:underline disabled:opacity-40 active-press"
               >
                 {isDeleting ? (
                   'Cancelling...'
@@ -251,7 +251,7 @@ export function EventModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-1.5 hover:bg-bg-hover text-xs text-text-secondary rounded-lg transition-colors active-press"
+                className="px-4 py-1.5 text-xs text-text-secondary hover:text-text-primary bg-bg-secondary hover:bg-bg-hover rounded-lg border border-border-primary transition-all duration-100 active-press"
               >
                 Close
               </button>
@@ -261,7 +261,7 @@ export function EventModal({
                 className={`flex items-center gap-1.5 px-5 py-1.5 rounded-lg text-xs font-semibold text-white transition-all duration-200 active-press ${
                   saveSuccess
                     ? 'bg-green-600'
-                    : 'bg-accent-red hover:bg-accent-red-hover disabled:opacity-50 disabled:pointer-events-none'
+                    : 'bg-accent hover:opacity-90 disabled:opacity-40 disabled:pointer-events-none'
                 }`}
               >
                 {saveSuccess ? (

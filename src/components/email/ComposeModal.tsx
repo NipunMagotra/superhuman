@@ -130,7 +130,7 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 hover:bg-bg-hover rounded-lg transition-colors active-press"
+              className="px-4 py-2 text-text-secondary hover:text-text-primary bg-bg-secondary hover:bg-bg-hover rounded-lg border border-border-primary transition-all duration-100 active-press"
             >
               Cancel
             </button>
@@ -140,7 +140,7 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
               className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-white transition-all duration-200 active-press ${
                 sendSuccess
                   ? 'bg-green-600'
-                  : 'bg-accent-blue hover:bg-accent-blue-hover disabled:opacity-50 disabled:pointer-events-none'
+                  : 'bg-accent hover:opacity-90 disabled:opacity-40 disabled:pointer-events-none'
               }`}
             >
               {sendSuccess ? (

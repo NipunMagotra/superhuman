@@ -226,7 +226,7 @@ export function EmailDetail({
                 className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                   sendSuccess
                     ? 'bg-green-600 text-white'
-                    : 'bg-accent-blue hover:bg-accent-blue-hover text-white disabled:opacity-50 disabled:pointer-events-none'
+                    : 'bg-accent hover:opacity-90 text-white disabled:opacity-40 disabled:pointer-events-none'
                 }`}
               >
                 {sendSuccess ? (

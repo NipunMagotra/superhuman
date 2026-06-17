@@ -164,7 +164,7 @@ export function AIChatBar({ isOpen, onClose }: AIChatBarProps) {
         <button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="p-2 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-xl disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer"
+          className="p-2 bg-accent hover:opacity-90 text-white rounded-xl disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
         >
           <Send className="w-3.5 h-3.5" />
         </button>
