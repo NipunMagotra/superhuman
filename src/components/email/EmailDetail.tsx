@@ -149,7 +149,7 @@ export function EmailDetail({
         </div>
 
         {/* Render body HTML safely inside iframe */}
-        <div className="flex-1 min-h-[300px] bg-bg-primary rounded-xl overflow-hidden border border-border-primary/40">
+        <div className="flex-1 min-h-[300px] bg-white rounded-xl overflow-hidden border border-border-primary/40">
           <iframe
             title="Email Content"
             sandbox="allow-popups"
@@ -162,26 +162,26 @@ export function EmailDetail({
                       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                       font-size: 14px;
                       line-height: 1.6;
-                      color: #d1d5db;
-                      background-color: #050506;
+                      color: #1f2937;
+                      background-color: #ffffff;
                       margin: 20px;
                       word-wrap: break-word;
                     }
                     a {
-                      color: #3b82f6;
+                      color: #2563eb;
                       text-decoration: none;
                     }
                     a:hover {
                       text-decoration: underline;
                     }
                     blockquote {
-                      border-left: 3px solid #1a1a22;
+                      border-left: 3px solid #e5e7eb;
                       padding-left: 12px;
-                      color: #9ca3af;
+                      color: #4b5563;
                       margin-left: 0;
                     }
                     pre {
-                      background-color: #111114;
+                      background-color: #f3f4f6;
                       padding: 10px;
                       border-radius: 6px;
                       overflow-x: auto;
@@ -189,7 +189,7 @@ export function EmailDetail({
                   </style>
                 </head>
                 <body>
-                  ${email.body_html || email.body_text || '<p class="text-text-dim">No message body found.</p>'}
+                  ${email.body_html || email.body_text || '<p style="color: #9ca3af;">No message body found.</p>'}
                 </body>
               </html>
             `}
