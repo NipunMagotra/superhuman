@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Calendar, ArrowLeft, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(true);
@@ -74,6 +75,11 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col justify-center items-center px-4 py-12 relative">
+      {/* Theme Toggle in top right */}
+      <div className="absolute top-6 right-6 z-20">
+        <ThemeToggle />
+      </div>
+
       {/* Background Gradient Orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-red/5 rounded-full blur-3xl pointer-events-none" />
@@ -163,14 +169,14 @@ export default function AuthPage() {
                 <>
                   <a
                     href="/api/auth/corsair?plugin=gmail"
-                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary"
+                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary active-press"
                   >
                     Switch Account
                   </a>
                   <button
                     onClick={() => handleDisconnect('gmail')}
                     disabled={loading}
-                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors"
+                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors active-press"
                   >
                     Disconnect
                   </button>
@@ -178,7 +184,7 @@ export default function AuthPage() {
               ) : (
                 <a
                   href="/api/auth/corsair?plugin=gmail"
-                  className="w-full py-2 bg-accent-blue hover:bg-accent-blue-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-blue/10"
+                  className="w-full py-2 bg-accent-blue hover:bg-accent-blue-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-blue/10 active-press"
                 >
                   Connect Gmail Account
                 </a>
@@ -225,14 +231,14 @@ export default function AuthPage() {
                 <>
                   <a
                     href="/api/auth/corsair?plugin=googlecalendar"
-                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary"
+                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary active-press"
                   >
                     Switch Account
                   </a>
                   <button
                     onClick={() => handleDisconnect('googlecalendar')}
                     disabled={loading}
-                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors"
+                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors active-press"
                   >
                     Disconnect
                   </button>
@@ -240,7 +246,7 @@ export default function AuthPage() {
               ) : (
                 <a
                   href="/api/auth/corsair?plugin=googlecalendar"
-                  className="w-full py-2 bg-accent-red hover:bg-accent-red-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-red/10"
+                  className="w-full py-2 bg-accent-red hover:bg-accent-red-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-red/10 active-press"
                 >
                   Connect Calendar Account
                 </a>

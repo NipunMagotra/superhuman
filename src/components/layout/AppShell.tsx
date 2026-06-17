@@ -6,6 +6,7 @@ import { AIChatBar } from '../chat/AIChatBar';
 import { CommandPalette } from '../command-palette/CommandPalette';
 import { Loader2, RefreshCw, Radio } from 'lucide-react';
 import { useKeyboardShortcuts } from '../command-palette/useKeyboardShortcuts';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -71,10 +72,11 @@ export function AppShell({
           </div>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <button
               onClick={onSync}
               disabled={isSyncing}
-              className="flex items-center gap-1.5 px-3 py-1 bg-bg-secondary hover:bg-bg-hover text-xs font-semibold text-text-secondary hover:text-text-primary rounded-lg border border-border-primary hover:border-border-hover transition-colors disabled:opacity-50 disabled:pointer-events-none"
+              className="flex items-center gap-1.5 px-3 py-1 bg-bg-secondary hover:bg-bg-hover text-xs font-semibold text-text-secondary hover:text-text-primary rounded-lg border border-border-primary hover:border-border-hover transition-colors disabled:opacity-50 disabled:pointer-events-none active-press"
             >
               {isSyncing ? (
                 <>

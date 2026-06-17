@@ -98,7 +98,7 @@ export function EmailList({
               key={email.gmail_id}
               data-index={idx}
               onClick={() => onSelectEmail(email)}
-              className={`flex items-start gap-4 p-4 cursor-pointer select-none transition-all duration-150 border-l-2 group ${
+              className={`flex items-start gap-4 p-4 cursor-pointer select-none transition-all duration-150 border-l-2 group active-press ${
                 isSelected
                   ? 'bg-bg-hover/80 border-l-accent-blue shadow-inner'
                   : 'hover:bg-bg-hover/30 border-l-transparent'
@@ -111,7 +111,7 @@ export function EmailList({
                     e.stopPropagation();
                     onToggleStar(email.gmail_id, email.is_starred);
                   }}
-                  className={`p-1 rounded hover:bg-bg-hover text-text-dim hover:text-yellow-500 transition-colors ${
+                  className={`p-1 rounded hover:bg-bg-hover text-text-dim hover:text-yellow-500 transition-colors active-press ${
                     email.is_starred ? 'text-yellow-500' : ''
                   }`}
                 >
@@ -161,7 +161,7 @@ export function EmailList({
                     e.stopPropagation();
                     onArchive(email.gmail_id);
                   }}
-                  className="p-1.5 rounded bg-bg-tertiary border border-border-primary hover:text-accent-blue"
+                  className="p-1.5 rounded bg-bg-tertiary border border-border-primary hover:text-accent-blue active-press"
                   title="Archive"
                 >
                   <Archive className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ export function EmailList({
                     e.stopPropagation();
                     onDelete(email.gmail_id);
                   }}
-                  className="p-1.5 rounded bg-bg-tertiary border border-border-primary hover:text-accent-red"
+                  className="p-1.5 rounded bg-bg-tertiary border border-border-primary hover:text-accent-red active-press"
                   title="Move to Trash"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

@@ -106,7 +106,7 @@ export function EventModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-[#0b0c0f] border border-[#dc2626]/15 rounded-xl overflow-hidden shadow-2xl shadow-[0_0_20px_rgba(220,38,38,0.06)] font-sans"
+        className="w-full max-w-lg bg-bg-secondary border border-border-primary rounded-xl overflow-hidden shadow-2xl font-sans animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -114,7 +114,7 @@ export function EventModal({
           <span className="text-sm font-semibold text-text-primary">
             {event ? 'Edit Event' : 'Schedule Event'}
           </span>
-          <button onClick={onClose} className="text-text-dim hover:text-text-secondary">
+          <button onClick={onClose} className="text-text-dim hover:text-text-secondary p-1 rounded hover:bg-bg-hover active-press">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -232,7 +232,7 @@ export function EventModal({
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="flex items-center gap-1 text-xs text-accent-red hover:underline disabled:opacity-50"
+                className="flex items-center gap-1 text-xs text-accent-red hover:underline disabled:opacity-50 active-press"
               >
                 {isDeleting ? (
                   'Cancelling...'
@@ -251,14 +251,14 @@ export function EventModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-1.5 hover:bg-bg-hover text-xs text-text-secondary rounded-lg transition-colors"
+                className="px-4 py-1.5 hover:bg-bg-hover text-xs text-text-secondary rounded-lg transition-colors active-press"
               >
                 Close
               </button>
               <button
                 type="submit"
                 disabled={isSaving || !summary.trim()}
-                className={`flex items-center gap-1.5 px-5 py-1.5 rounded-lg text-xs font-semibold text-white transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-5 py-1.5 rounded-lg text-xs font-semibold text-white transition-all duration-200 active-press ${
                   saveSuccess
                     ? 'bg-green-600'
                     : 'bg-accent-red hover:bg-accent-red-hover disabled:opacity-50 disabled:pointer-events-none'

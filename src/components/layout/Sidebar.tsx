@@ -33,7 +33,7 @@ export function Sidebar({
           {/* Inbox Button */}
           <button
             onClick={() => onNavigate('inbox')}
-            className={`relative p-2.5 rounded-xl transition-all duration-200 group ${
+            className={`relative p-2.5 rounded-xl transition-all duration-200 group active-press ${
               currentView === 'inbox'
                 ? 'bg-bg-hover text-accent-blue'
                 : 'text-text-muted hover:text-text-primary hover:bg-bg-hover'
@@ -55,7 +55,7 @@ export function Sidebar({
           {/* Calendar Button */}
           <button
             onClick={() => onNavigate('calendar')}
-            className={`relative p-2.5 rounded-xl transition-all duration-200 group ${
+            className={`relative p-2.5 rounded-xl transition-all duration-200 group active-press ${
               currentView === 'calendar'
                 ? 'bg-bg-hover text-accent-red'
                 : 'text-text-muted hover:text-text-primary hover:bg-bg-hover'
@@ -71,7 +71,7 @@ export function Sidebar({
           {/* Settings Button */}
           <button
             onClick={() => onNavigate('auth')}
-            className={`relative p-2.5 rounded-xl transition-all duration-200 group ${
+            className={`relative p-2.5 rounded-xl transition-all duration-200 group active-press ${
               currentView === 'auth'
                 ? 'bg-bg-hover text-text-primary'
                 : 'text-text-muted hover:text-text-primary hover:bg-bg-hover'
@@ -91,7 +91,7 @@ export function Sidebar({
         {onToggleChat && (
           <button
             onClick={onToggleChat}
-            className={`relative p-2.5 rounded-xl transition-all duration-200 group ${
+            className={`relative p-2.5 rounded-xl transition-all duration-200 group active-press ${
               isChatOpen
                 ? 'bg-accent-blue/10 text-accent-blue border border-accent-blue/30'
                 : 'text-text-muted hover:text-text-primary hover:bg-bg-hover border border-transparent'

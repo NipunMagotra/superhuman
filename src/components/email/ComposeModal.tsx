@@ -70,7 +70,7 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-xl bg-[#0b0c0f] border border-[#2563eb]/15 rounded-xl overflow-hidden shadow-2xl flex flex-col shadow-[0_0_20px_rgba(37,99,235,0.06)] font-sans"
+        className="w-full max-w-xl bg-bg-secondary border border-border-primary rounded-xl overflow-hidden shadow-2xl flex flex-col font-sans animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -78,7 +78,7 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
           <span className="text-sm font-semibold text-text-primary">New Message</span>
           <button 
             onClick={onClose}
-            className="text-text-dim hover:text-text-secondary"
+            className="text-text-dim hover:text-text-secondary p-1 rounded hover:bg-bg-hover active-press"
           >
             <X className="w-4 h-4" />
           </button>
@@ -130,14 +130,14 @@ export function ComposeModal({ isOpen, onClose, onSend }: ComposeModalProps) {
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 hover:bg-bg-hover rounded-lg transition-colors"
+              className="px-4 py-2 hover:bg-bg-hover rounded-lg transition-colors active-press"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={isSending || !to.trim() || !subject.trim() || !body.trim()}
-              className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-white transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-white transition-all duration-200 active-press ${
                 sendSuccess
                   ? 'bg-green-600'
                   : 'bg-accent-blue hover:bg-accent-blue-hover disabled:opacity-50 disabled:pointer-events-none'

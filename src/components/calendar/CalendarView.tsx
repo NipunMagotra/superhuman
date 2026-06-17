@@ -46,7 +46,7 @@ export function CalendarView({ events, onCreateEvent, onEditEvent }: CalendarVie
 
         <button
           onClick={() => onCreateEvent(selectedDate)}
-          className="flex items-center gap-1.5 px-3 py-1 bg-accent-red hover:bg-accent-red-hover text-white text-xs font-semibold rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1 bg-accent-red hover:bg-accent-red-hover text-white text-xs font-semibold rounded-lg transition-colors active-press"
         >
           <Plus className="w-3.5 h-3.5" />
           Add Event
@@ -64,7 +64,7 @@ export function CalendarView({ events, onCreateEvent, onEditEvent }: CalendarVie
             <button
               key={idx}
               onClick={() => setSelectedDate(day)}
-              className={`flex-1 min-w-[56px] py-2.5 rounded-xl flex flex-col items-center gap-1.5 border transition-all duration-150 relative ${
+              className={`flex-1 min-w-[56px] py-2.5 rounded-xl flex flex-col items-center gap-1.5 border transition-all duration-150 relative active-press ${
                 isSelected
                   ? 'bg-bg-hover text-accent-red border-accent-red/30'
                   : 'bg-transparent border-transparent text-text-muted hover:text-text-primary hover:bg-bg-hover/30'
@@ -101,7 +101,7 @@ export function CalendarView({ events, onCreateEvent, onEditEvent }: CalendarVie
             <span>No events scheduled for this day</span>
             <button
               onClick={() => onCreateEvent(selectedDate)}
-              className="text-xs text-accent-red hover:underline"
+              className="text-xs text-accent-red hover:underline active-press"
             >
               Create one now
             </button>
@@ -117,7 +117,7 @@ export function CalendarView({ events, onCreateEvent, onEditEvent }: CalendarVie
                 <div
                   key={event.id || event.gcal_id}
                   onClick={() => onEditEvent(event)}
-                  className="relative group bg-bg-secondary border border-border-primary hover:border-border-hover p-4 rounded-xl cursor-pointer transition-all duration-200"
+                  className="relative group bg-bg-secondary border border-border-primary hover:border-border-hover p-4 rounded-xl cursor-pointer transition-all duration-200 active-press"
                 >
                   {/* Timeline bullet dot */}
                   <span className="absolute -left-[31px] top-5 w-2.5 h-2.5 rounded-full border border-bg-primary bg-accent-red group-hover:scale-125 transition-transform" />
