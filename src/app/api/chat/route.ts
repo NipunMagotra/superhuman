@@ -1,5 +1,5 @@
 import { streamText, createUIMessageStreamResponse } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { buildCorsairToolDefs } from '@corsair-dev/mcp';
 import { corsair } from '@/lib/corsair';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     // Check if the API key is missing or is the placeholder key
     const apiKey = process.env.OPENAI_API_KEY || '';
-    const isMockKey = apiKey.startsWith('sk-live-e3d64c89') || apiKey === '' || apiKey.includes('YOUR_');
+    const isMockKey = apiKey === '' || apiKey.includes('YOUR_');
 
     if (isMockKey) {
       const messageId = 'msg-' + Date.now();
@@ -71,8 +71,13 @@ export async function POST(request: Request) {
       };
     }
 
+    const aiProvider = createOpenAI({
+      apiKey,
+      baseURL: apiKey.startsWith('sk-live-') ? 'https://api.aicredits.in/v1' : undefined,
+    });
+
     const result = streamText({
-      model: openai('gpt-4o'),
+      model: aiProvider('gpt-4o'),
       messages,
       system: `
 You are the AI Command Center Agent, an assistant helping the user manage their Gmail and Google Calendar.
