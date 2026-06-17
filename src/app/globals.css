@@ -18,8 +18,8 @@
   --color-text-dim: var(--text-dim);
 
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-display), sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-display: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
 /* ── Easing (Emil Kowalski spec — custom curves, never built-in) ── */
