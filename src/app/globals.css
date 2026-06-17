@@ -5,11 +5,9 @@
   --color-bg-secondary: var(--bg-secondary);
   --color-bg-tertiary: var(--bg-tertiary);
   --color-bg-hover: var(--bg-hover);
-  
-  --color-accent-red: #dc2626;
-  --color-accent-red-hover: #ef4444;
-  --color-accent-blue: #2563eb;
-  --color-accent-blue-hover: #3b82f6;
+
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
   
   --color-border-primary: var(--border-primary);
   --color-border-hover: var(--border-hover);
@@ -24,117 +22,194 @@
   --font-mono: var(--font-mono), monospace;
 }
 
+/* ── Easing (Emil Kowalski spec — custom curves, never built-in) ── */
 :root {
-  /* Light Mode (Zinc-inspired warm light theme) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
   --background: #fafafa;
-  --foreground: #09090b;
-  
-  --bg-primary: #ffffff;
-  --bg-secondary: #f4f4f5;
-  --bg-tertiary: #fafafa;
-  --bg-hover: #f4f4f5;
-  
-  --border-primary: #e4e4e7;
-  --border-hover: #d4d4d8;
-  
-  --text-primary: #09090b;
-  --text-secondary: #27272a;
-  --text-muted: #71717a;
-  --text-dim: #a1a1aa;
+  --foreground: #111;
+
+  --bg-primary: #fff;
+  --bg-secondary: #f7f7f8;
+  --bg-tertiary: #efefef;
+  --bg-hover: #f0f0f2;
+
+  --accent: #5746ec;
+  --accent-muted: rgba(87, 70, 236, 0.08);
+
+  --border-primary: #e8e8ec;
+  --border-hover: #d0d0d8;
+
+  --text-primary: #111;
+  --text-secondary: #333;
+  --text-muted: #666;
+  --text-dim: #999;
 }
 
 .dark {
-  /* Dark Mode (Editorial pitch-black tech theme) */
-  --background: #050506;
-  --foreground: #f9fafb;
-  
-  --bg-primary: #050506;
-  --bg-secondary: #0b0b0d;
-  --bg-tertiary: #111114;
-  --bg-hover: #17171c;
-  
-  --border-primary: #1a1a22;
-  --border-hover: #2d2d3d;
-  
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --background: #0a0a0b;
+  --foreground: #ececee;
+
+  --bg-primary: #0a0a0b;
+  --bg-secondary: #111113;
+  --bg-tertiary: #191919;
+  --bg-hover: #1e1e22;
+
+  --accent: #6e5ff5;
+  --accent-muted: rgba(110, 95, 245, 0.1);
+
+  --border-primary: #1e1e24;
+  --border-hover: #2e2e38;
+
+  --text-primary: #ececee;
+  --text-secondary: #a8a8b0;
+  --text-muted: #6e6e78;
+  --text-dim: #444450;
 }
 
 body {
-  background-color: var(--background);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
-/* Custom scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ── Selection ── */
+::selection {
+  background: var(--accent-muted);
+  color: var(--text-primary);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+/* ── Press feedback (Emil: buttons must feel responsive) ── */
+.press {
+  transition: transform 100ms var(--ease-out);
 }
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-hover);
-}
-
-/* Custom utility for glassmorphism */
-.glass-panel {
-  background: rgba(var(--bg-secondary), 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-primary);
-}
-
-/* Snappy Animations using Custom Easing (Emil Kowalski's Philosophy) */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideLeft {
-  from { opacity: 0; transform: translateX(24px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 180ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-.animate-slide-left {
-  animation: slideLeft 220ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
-}
-
-.animate-scale-up {
-  animation: scaleUp 180ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-/* Tactile Active Press Feedback class */
-.active-press {
-  transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.active-press:active {
+.press:active {
   transform: scale(0.97);
 }
 
-/* Cmdk command palette styles override */
+/* ── Card base ── */
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--border-hover);
+  }
+}
+
+/* ── Entrance animations ── */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-enter {
+  animation: enter 350ms var(--ease-out) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 200ms var(--ease-out) both;
+}
+
+/* Stagger via nth-child or manual delay */
+.delay-1 { animation-delay: 0ms; }
+.delay-2 { animation-delay: 50ms; }
+.delay-3 { animation-delay: 100ms; }
+.delay-4 { animation-delay: 150ms; }
+.delay-5 { animation-delay: 200ms; }
+.delay-6 { animation-delay: 250ms; }
+
+/* ── Easter egg: pigeon rain ── */
+@keyframes rain {
+  from { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+  to { transform: translateY(105vh) rotate(360deg); opacity: 0.5; }
+}
+.rain-drop {
+  position: fixed;
+  top: -50px;
+  font-size: 24px;
+  z-index: 200;
+  pointer-events: none;
+  animation: rain linear forwards;
+}
+
+/* ── Easter egg: logo spin ── */
+@keyframes spin360 {
+  to { transform: rotate(360deg); }
+}
+.logo-spin {
+  animation: spin360 500ms var(--ease-in-out);
+}
+
+/* ── Easter egg: feathers ── */
+@keyframes feather {
+  from { transform: translateY(0) rotate(0); opacity: 1; }
+  to { transform: translateY(-50vh) rotate(180deg) translateX(30px); opacity: 0; }
+}
+.feather {
+  position: fixed;
+  font-size: 18px;
+  z-index: 200;
+  pointer-events: none;
+  animation: feather 2.5s ease-out forwards;
+}
+
+/* ── Toast enter ── */
+.toast-enter {
+  animation: enter 200ms var(--ease-out) both;
+}
+
+/* ── Kbd styling ── */
+kbd {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+/* ── The only accent border — top of page ── */
+.accent-top {
+  border-top: 2px solid var(--accent);
+}
+
+/* ── CMDK ── */
 [data-cmdk-root] {
   display: flex;
   flex-direction: column;
@@ -144,10 +219,9 @@ body {
   background: var(--bg-secondary);
   border-radius: 12px;
   border: 1px solid var(--border-primary);
-  box-shadow: 0 16px 70px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 16px 70px rgba(0, 0, 0, 0.35);
   overflow: hidden;
 }
-
 [data-cmdk-input] {
   font-family: inherit;
   font-size: 16px;
@@ -159,16 +233,8 @@ body {
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-primary);
 }
-
-[data-cmdk-input]::placeholder {
-  color: var(--text-dim);
-}
-
-[data-cmdk-list] {
-  padding: 8px;
-  overflow-y: auto;
-}
-
+[data-cmdk-input]::placeholder { color: var(--text-dim); }
+[data-cmdk-list] { padding: 8px; overflow-y: auto; }
 [data-cmdk-group-heading] {
   user-select: none;
   font-size: 11px;
@@ -178,7 +244,6 @@ body {
   color: var(--text-dim);
   padding: 8px 12px;
 }
-
 [data-cmdk-item] {
   display: flex;
   align-items: center;
@@ -189,19 +254,16 @@ body {
   color: var(--text-secondary);
   cursor: pointer;
   user-select: none;
-  transition: all 0.1s ease;
+  transition: background 80ms ease, color 80ms ease;
 }
-
 [data-cmdk-item][data-selected='true'] {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
-
 [data-cmdk-item][data-disabled='true'] {
   color: var(--text-dim);
   cursor: not-allowed;
 }
-
 [data-cmdk-empty] {
   display: flex;
   align-items: center;
@@ -209,4 +271,13 @@ body {
   height: 64px;
   font-size: 14px;
   color: var(--text-muted);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
