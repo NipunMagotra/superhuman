@@ -1,4 +1,4 @@
-import { streamText } from 'ai';
+import { streamText, createUIMessageStreamResponse } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { buildCorsairToolDefs } from '@corsair-dev/mcp';
 import { corsair } from '@/lib/corsair';
@@ -9,6 +9,34 @@ export const maxDuration = 30;
 export async function POST(request: Request) {
   try {
     const { messages } = await request.json();
+
+    // Check if the API key is missing or is the placeholder key
+    const apiKey = process.env.OPENAI_API_KEY || '';
+    const isMockKey = apiKey.startsWith('sk-live-e3d64c89') || apiKey === '' || apiKey.includes('YOUR_');
+
+    if (isMockKey) {
+      const messageId = 'msg-' + Date.now();
+      const stream = new ReadableStream({
+        async start(controller) {
+          controller.enqueue({ type: 'start' });
+          controller.enqueue({ type: 'text-start', id: messageId });
+          
+          const text = "Hello! I am your AI Command Assistant.\n\nSince the OpenAI API Key is not configured or is a placeholder, I am running in **mock demo mode**.\n\nYou can ask me to draft replies, list calendar events, or search your inbox. To activate full functional AI support, please configure a valid OpenAI API key in your `.env.local` file!\n\nHow can I help you today?";
+          
+          const chunks = text.match(/.{1,8}/g) || [text];
+          for (const chunk of chunks) {
+            controller.enqueue({ type: 'text-delta', id: messageId, delta: chunk });
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          }
+          
+          controller.enqueue({ type: 'text-end', id: messageId });
+          controller.enqueue({ type: 'finish', finishReason: 'stop' });
+          controller.close();
+        }
+      });
+
+      return createUIMessageStreamResponse({ stream });
+    }
 
     const toolDefs = buildCorsairToolDefs({ corsair });
 

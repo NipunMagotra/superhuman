@@ -38,7 +38,7 @@ export function AIChatBar({ isOpen, onClose }: AIChatBarProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-0 right-0 w-[400px] h-full border-l border-border-primary bg-[#0c0d10] flex flex-col shadow-2xl animate-slide-left z-40">
+    <div className="dark absolute top-0 right-0 w-[400px] h-full border-l border-border-primary bg-[#0c0d10] flex flex-col shadow-2xl animate-slide-left z-40">
       {/* Header */}
       <div className="px-6 py-4 border-b border-border-primary/60 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -102,31 +102,44 @@ export function AIChatBar({ isOpen, onClose }: AIChatBarProps) {
                         : 'bg-bg-tertiary text-text-secondary rounded-tl-none border border-border-primary'
                     }`}
                   >
-                    {message.content && <p className="whitespace-pre-wrap">{message.content}</p>}
+                    {message.parts && message.parts.map((part: any, index: number) => {
+                      if (part.type === 'text') {
+                        return <p key={index} className="whitespace-pre-wrap">{part.text}</p>;
+                      }
+                      return null;
+                    })}
                   </div>
 
                   {/* Tool call indicators */}
-                  {message.toolInvocations && message.toolInvocations.length > 0 && (
+                  {message.parts && message.parts.filter(
+                    (part: any) => part.type === 'dynamic-tool' || part.type.startsWith('tool-')
+                  ).length > 0 && (
                     <div className="flex flex-col gap-1.5 ml-2">
-                      {message.toolInvocations.map((toolInvocation: any) => {
-                        const { toolName, toolCallId, state } = toolInvocation;
-                        return (
-                          <div
-                            key={toolCallId}
-                            className="text-[10px] text-text-dim bg-bg-primary px-2.5 py-1 rounded-lg border border-border-primary/40 flex items-center gap-2 w-fit"
-                          >
-                            {state === 'result' ? (
-                              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                            ) : (
-                              <Loader2 className="w-3 h-3 animate-spin text-accent-blue" />
-                            )}
-                            <span>
-                              {state === 'result' ? 'Finished' : 'Running'} tool:{' '}
-                              <span className="font-mono text-text-secondary">{toolName}</span>
-                            </span>
-                          </div>
-                        );
-                      })}
+                      {message.parts
+                        .filter((part: any) => part.type === 'dynamic-tool' || part.type.startsWith('tool-'))
+                        .map((part: any, partIdx: number) => {
+                          const toolName = part.type === 'dynamic-tool' ? part.toolName : part.type.replace(/^tool-/, '');
+                          const toolCallId = part.toolCallId;
+                          const state = part.state;
+                          const isDone = state === 'output-available' || state === 'output-error' || state === 'output-denied';
+
+                          return (
+                            <div
+                              key={toolCallId || partIdx}
+                              className="text-[10px] text-text-dim bg-bg-primary px-2.5 py-1 rounded-lg border border-border-primary/40 flex items-center gap-2 w-fit"
+                            >
+                              {isDone ? (
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                              ) : (
+                                <Loader2 className="w-3 h-3 animate-spin text-accent-blue" />
+                              )}
+                              <span>
+                                {isDone ? 'Finished' : 'Running'} tool:{' '}
+                                <span className="font-mono text-text-secondary">{toolName}</span>
+                              </span>
+                            </div>
+                          );
+                        })}
                     </div>
                   )}
                 </div>
