@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Pigeon — High-Speed Email & Calendar Hub',
-  description: 'Ultra-minimalist, keyboard-first, AI-powered control panel for Gmail and Google Calendar.',
-  keywords: ['gmail', 'google calendar', 'ai assistant', 'keyboard shortcuts', 'superhuman style', 'inbox zero'],
+  title: 'Pigeon — Email & Calendar',
+  description: 'Keyboard-first Gmail and Google Calendar client.',
+  keywords: ['gmail', 'google calendar', 'email', 'keyboard shortcuts', 'inbox'],
 };
 
 export default function RootLayout({

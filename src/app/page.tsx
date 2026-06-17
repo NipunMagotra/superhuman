@@ -179,7 +179,7 @@ export default function LandingPage() {
 
               <p className="text-[15px] text-text-muted leading-relaxed mb-8 animate-enter delay-3">
                 Keyboard-first Gmail &amp; Calendar. Fast search and shortcuts.
-                Secure by default. Feels like it reads your mind.
+                Secure by default.
               </p>
 
               <div className="flex items-center gap-3 animate-enter delay-4">
