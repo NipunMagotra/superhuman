@@ -5,6 +5,7 @@ import {
   archiveGmailEmail,
   modifyGmailEmailLabels,
   trashGmailEmail,
+  replyToGmailEmail,
 } from '@/lib/gmail';
 
 // GET: Retrieve a single email detail
@@ -223,3 +224,35 @@ export async function DELETE(
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+// POST: Reply to an email (thread)
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: parentMessageId } = await params;
+    const body = await request.json();
+    const { threadId, to, subject, bodyHtml } = body;
+
+    if (!threadId || !to || !subject || !bodyHtml) {
+      return NextResponse.json(
+        { error: 'Missing required fields: threadId, to, subject, bodyHtml' },
+        { status: 400 }
+      );
+    }
+
+    const response = await replyToGmailEmail(
+      threadId,
+      parentMessageId,
+      to,
+      subject,
+      bodyHtml
+    );
+
+    return NextResponse.json({ success: true, message: response });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
