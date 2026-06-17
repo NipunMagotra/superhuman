@@ -46,20 +46,40 @@ export default function AuthPage() {
     }
   };
 
+  const handleDisconnect = async (plugin: 'gmail' | 'googlecalendar') => {
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+      setMessage(null);
+      const res = await fetch(`/api/auth/disconnect?plugin=${plugin}`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        setMessage(`Successfully disconnected ${plugin === 'gmail' ? 'Gmail' : 'Google Calendar'} and wiped local cache.`);
+        await fetchConnections();
+      } else {
+        const data = await res.json();
+        setErrorMsg(data.error || 'Failed to disconnect.');
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || String(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      fetchConnections();
-    }, 0);
+    fetchConnections();
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col justify-center items-center px-4 relative">
+    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col justify-center items-center px-4 py-12 relative">
       {/* Background Gradient Orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-red/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Container Card */}
-      <div className="w-full max-w-md bg-bg-secondary border border-border-primary rounded-2xl p-8 shadow-2xl relative z-10">
+      <div className="w-full max-w-lg bg-bg-secondary border border-border-primary rounded-2xl p-8 shadow-2xl relative z-10">
         
         {/* Back navigation */}
         <Link 
@@ -70,91 +90,162 @@ export default function AuthPage() {
           Back to Command Center
         </Link>
 
-        <h1 className="text-xl font-bold mb-2 text-text-primary">Integrations</h1>
-        <p className="text-xs text-text-dim mb-8">
-          Connect your Google accounts to link Gmail and Calendar to the AI Command Center.
+        <h1 className="text-xl font-bold mb-2 text-text-primary">Integrations & Settings</h1>
+        <p className="text-xs text-text-dim mb-6 leading-relaxed">
+          Link your Google workspace accounts to activate real-time syncing for emails and calendar schedules with the AI Command Center.
         </p>
+
+        {/* Informative Banner about Shared Tenant */}
+        <div className="p-4 bg-accent-blue/5 border border-accent-blue/20 rounded-xl text-xs text-text-primary mb-6 flex flex-col gap-1.5 leading-relaxed">
+          <span className="font-semibold text-accent-blue flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-blue animate-pulse" />
+            💡 Shared Database Notice:
+          </span>
+          <span className="text-text-muted">
+            This project runs on a shared developer database. If you see a service marked as <strong>Connected</strong> but want to use your own account, click <strong>Disconnect</strong> first to wipe the credentials, then connect your personal account.
+          </span>
+        </div>
 
         {/* Status Alerts */}
         {message && (
-          <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-xs text-green-400 flex items-start gap-2 mb-6">
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-xs text-green-400 flex items-start gap-2 mb-6 animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-green-400" />
             <span>{message}</span>
           </div>
         )}
 
         {errorMsg && (
-          <div className="p-3 bg-accent-red/10 border border-accent-red/20 rounded-xl text-xs text-accent-red flex items-start gap-2 mb-6">
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>Connection failed: {errorMsg}</span>
+          <div className="p-3 bg-accent-red/10 border border-accent-red/20 rounded-xl text-xs text-accent-red flex items-start gap-2 mb-6 animate-fade-in">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-accent-red" />
+            <span>{errorMsg}</span>
           </div>
         )}
 
-        {/* Connection Buttons */}
-        <div className="flex flex-col gap-4">
+        {/* Connection Cards */}
+        <div className="flex flex-col gap-6">
           
           {/* Gmail */}
-          <div className="bg-bg-tertiary/60 border border-border-primary/50 rounded-xl p-4 flex flex-col gap-3">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-accent-blue/10 flex items-center justify-center text-accent-blue">
-                  <Mail className="w-4 h-4" />
+          <div className="bg-bg-tertiary/60 border border-border-primary/50 rounded-xl p-5 flex flex-col gap-4">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-accent-blue/10 flex items-center justify-center text-accent-blue border border-accent-blue/10">
+                  <Mail className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary">Gmail Integration</h3>
-                  <span className="text-[10px] text-text-dim">Emails, Send, Drafts, Labels</span>
+                  <p className="text-[11px] text-text-dim mt-0.5">Read, search, categorize, and draft emails</p>
                 </div>
               </div>
+              
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin text-text-dim" />
               ) : connections.gmail === 'connected' ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-sm flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                   Connected
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-text-dim border border-zinc-500/20">
-                  Disconnected
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-zinc-500/10 text-text-dim border border-zinc-500/20 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                  Not Connected
                 </span>
               )}
             </div>
-            <a
-              href="/api/auth/corsair?plugin=gmail"
-              className="w-full py-2 bg-accent-blue hover:bg-accent-blue-hover text-white text-center rounded-lg text-xs font-semibold transition-colors block"
-            >
-              {connections.gmail === 'connected' ? 'Reconnect Gmail' : 'Connect Gmail'}
-            </a>
+
+            <p className="text-[11px] text-text-dim leading-relaxed bg-bg-primary/30 p-3 rounded-lg border border-border-primary/20">
+              {connections.gmail === 'connected' 
+                ? "Your Gmail is connected. The AI agent can sync inboxes, detect high priority emails, and write drafts."
+                : "No active Gmail connection found. Link your account to authorize the AI Command Center."}
+            </p>
+
+            <div className="flex items-center gap-3 mt-1">
+              {connections.gmail === 'connected' ? (
+                <>
+                  <a
+                    href="/api/auth/corsair?plugin=gmail"
+                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary"
+                  >
+                    Switch Account
+                  </a>
+                  <button
+                    onClick={() => handleDisconnect('gmail')}
+                    disabled={loading}
+                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors"
+                  >
+                    Disconnect
+                  </button>
+                </>
+              ) : (
+                <a
+                  href="/api/auth/corsair?plugin=gmail"
+                  className="w-full py-2 bg-accent-blue hover:bg-accent-blue-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-blue/10"
+                >
+                  Connect Gmail Account
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Calendar */}
-          <div className="bg-bg-tertiary/60 border border-border-primary/50 rounded-xl p-4 flex flex-col gap-3">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-accent-red/10 flex items-center justify-center text-accent-red">
-                  <Calendar className="w-4 h-4" />
+          <div className="bg-bg-tertiary/60 border border-border-primary/50 rounded-xl p-5 flex flex-col gap-4">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-accent-red/10 flex items-center justify-center text-accent-red border border-accent-red/10">
+                  <Calendar className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary">Google Calendar</h3>
-                  <span className="text-[10px] text-text-dim">Schedule, Invites, Meetings</span>
+                  <p className="text-[11px] text-text-dim mt-0.5">Manage schedules, create events, and check slots</p>
                 </div>
               </div>
+              
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin text-text-dim" />
               ) : connections.googlecalendar === 'connected' ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-sm flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                   Connected
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-text-dim border border-zinc-500/20">
-                  Disconnected
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-zinc-500/10 text-text-dim border border-zinc-500/20 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                  Not Connected
                 </span>
               )}
             </div>
-            <a
-              href="/api/auth/corsair?plugin=googlecalendar"
-              className="w-full py-2 bg-accent-red hover:bg-accent-red-hover text-white text-center rounded-lg text-xs font-semibold transition-colors block"
-            >
-              {connections.googlecalendar === 'connected' ? 'Reconnect Calendar' : 'Connect Calendar'}
-            </a>
+
+            <p className="text-[11px] text-text-dim leading-relaxed bg-bg-primary/30 p-3 rounded-lg border border-border-primary/20">
+              {connections.googlecalendar === 'connected'
+                ? "Your Google Calendar is connected. The AI agent can manage meeting invites and schedule/cancel events."
+                : "No active Google Calendar connection. Link your account to manage events via the Command Center."}
+            </p>
+
+            <div className="flex items-center gap-3 mt-1">
+              {connections.googlecalendar === 'connected' ? (
+                <>
+                  <a
+                    href="/api/auth/corsair?plugin=googlecalendar"
+                    className="flex-1 py-2 bg-bg-hover hover:bg-border-primary text-text-primary text-center rounded-lg text-xs font-semibold transition-colors border border-border-primary"
+                  >
+                    Switch Account
+                  </a>
+                  <button
+                    onClick={() => handleDisconnect('googlecalendar')}
+                    disabled={loading}
+                    className="px-4 py-2 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-lg text-xs font-semibold transition-colors"
+                  >
+                    Disconnect
+                  </button>
+                </>
+              ) : (
+                <a
+                  href="/api/auth/corsair?plugin=googlecalendar"
+                  className="w-full py-2 bg-accent-red hover:bg-accent-red-hover text-white text-center rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-accent-red/10"
+                >
+                  Connect Calendar Account
+                </a>
+              )}
+            </div>
           </div>
 
         </div>
