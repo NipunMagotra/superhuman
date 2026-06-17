@@ -6,7 +6,7 @@ import { sendGmailEmail } from '@/lib/gmail';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const label = searchParams.get('label') || 'INBOX'; // e.g., 'INBOX', 'SENT', 'TRASH', 'STARRED'
+    const label = searchParams.get('label') || 'INBOX'; // e.g., 'INBOX', 'SENT', 'ARCHIVED', 'TRASH', 'STARRED'
     const limit = parseInt(searchParams.get('limit') || '50', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
     const priorityFilter = searchParams.get('priority') === 'true'; // filter priority >= 0.7
@@ -20,6 +20,12 @@ export async function GET(request: Request) {
       query = query.eq('is_starred', true);
     } else if (label === 'TRASH') {
       query = query.contains('labels', ['TRASH']);
+    } else if (label === 'ARCHIVED') {
+      // Archived = not in Inbox, Trash, or Drafts
+      query = query
+        .not('labels', 'cs', '{INBOX}')
+        .not('labels', 'cs', '{TRASH}')
+        .not('labels', 'cs', '{DRAFT}');
     } else {
       // For general labels (e.g. INBOX, SENT), verify it is in labels array and NOT in TRASH
       query = query.contains('labels', [label]).not('labels', 'cs', '{TRASH}');

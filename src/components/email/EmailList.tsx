@@ -11,6 +11,7 @@ interface Email {
   thread_id: string;
   from_address: string;
   from_name: string;
+  to_addresses?: { address: string; name?: string }[];
   subject: string;
   snippet: string;
   is_read: boolean;
@@ -22,15 +23,28 @@ interface Email {
 interface EmailListProps {
   emails: Email[];
   selectedEmailId: string | null;
+  folder?: 'INBOX' | 'SENT' | 'ARCHIVED';
   onSelectEmail: (email: Email) => void;
   onToggleStar: (id: string, currentVal: boolean) => void;
   onArchive: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
+function getDisplayName(email: Email, folder: EmailListProps['folder']) {
+  if (folder === 'SENT') {
+    const recipients = email.to_addresses || [];
+    if (recipients.length === 0) return 'No recipient';
+    const first = recipients[0];
+    const name = first.name || first.address;
+    return recipients.length > 1 ? `${name} +${recipients.length - 1}` : name;
+  }
+  return email.from_name || email.from_address;
+}
+
 export function EmailList({
   emails,
   selectedEmailId,
+  folder = 'INBOX',
   onSelectEmail,
   onToggleStar,
   onArchive,
@@ -85,8 +99,18 @@ export function EmailList({
     <div ref={containerRef} className="flex-1 overflow-y-auto divide-y divide-border-primary/40">
       {emails.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 text-text-dim text-sm gap-2">
-          <span>No emails in this view</span>
-          <span className="text-xs text-text-dim/60">Press &apos;c&apos; to compose or wait for sync</span>
+          <span>
+            {folder === 'SENT'
+              ? 'No sent emails'
+              : folder === 'ARCHIVED'
+                ? 'No archived emails'
+                : 'No emails in this view'}
+          </span>
+          <span className="text-xs text-text-dim/60">
+            {folder === 'INBOX'
+              ? "Press 'c' to compose or wait for sync"
+              : 'Sync your mailbox to load emails'}
+          </span>
         </div>
       ) : (
         emails.map((email, idx) => {
@@ -133,7 +157,10 @@ export function EmailList({
                       email.is_read ? 'text-text-secondary font-medium' : 'text-text-primary font-bold'
                     }`}
                   >
-                    {email.from_name || email.from_address}
+                    {folder === 'SENT' && (
+                      <span className="text-text-dim font-normal mr-1">To:</span>
+                    )}
+                    {getDisplayName(email, folder)}
                   </span>
                   <span className="text-xs text-text-dim whitespace-nowrap">
                     {formatDistanceToNow(new Date(email.received_at), { addSuffix: true })}

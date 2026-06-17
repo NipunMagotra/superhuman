@@ -3,15 +3,17 @@
 import React, { useState } from 'react';
 import { Command } from 'cmdk';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
-import { Mail, Calendar, Settings, Edit, Search } from 'lucide-react';
+import { Mail, Calendar, Settings, Edit, Search, Send, Archive } from 'lucide-react';
+import type { EmailFolder } from '../email/EmailFolderTabs';
 
 interface CommandPaletteProps {
   onNavigate: (view: 'inbox' | 'calendar' | 'auth') => void;
+  onFolderChange?: (folder: EmailFolder) => void;
   onCompose: () => void;
   onSearchFocus: () => void;
 }
 
-export function CommandPalette({ onNavigate, onCompose, onSearchFocus }: CommandPaletteProps) {
+export function CommandPalette({ onNavigate, onFolderChange, onCompose, onSearchFocus }: CommandPaletteProps) {
   const [open, setOpen] = useState(false);
 
   // Toggle palette with Ctrl+K / Cmd+K
@@ -42,10 +44,29 @@ export function CommandPalette({ onNavigate, onCompose, onSearchFocus }: Command
             <Command.Empty>No results found.</Command.Empty>
 
             <Command.Group heading="Navigation">
-              <Command.Item onSelect={() => runCommand(() => onNavigate('inbox'))}>
+              <Command.Item onSelect={() => runCommand(() => {
+                onNavigate('inbox');
+                onFolderChange?.('INBOX');
+              })}>
                 <Mail className="w-4 h-4 mr-2 text-accent-blue" />
                 <span>Go to Inbox</span>
                 <kbd className="ml-auto text-xs px-1.5 py-0.5 rounded bg-bg-tertiary border border-border-primary text-text-dim">g i</kbd>
+              </Command.Item>
+              <Command.Item onSelect={() => runCommand(() => {
+                onNavigate('inbox');
+                onFolderChange?.('SENT');
+              })}>
+                <Send className="w-4 h-4 mr-2 text-accent-blue" />
+                <span>Go to Sent</span>
+                <kbd className="ml-auto text-xs px-1.5 py-0.5 rounded bg-bg-tertiary border border-border-primary text-text-dim">g t</kbd>
+              </Command.Item>
+              <Command.Item onSelect={() => runCommand(() => {
+                onNavigate('inbox');
+                onFolderChange?.('ARCHIVED');
+              })}>
+                <Archive className="w-4 h-4 mr-2 text-text-muted" />
+                <span>Go to Archived</span>
+                <kbd className="ml-auto text-xs px-1.5 py-0.5 rounded bg-bg-tertiary border border-border-primary text-text-dim">g a</kbd>
               </Command.Item>
               <Command.Item onSelect={() => runCommand(() => onNavigate('calendar'))}>
                 <Calendar className="w-4 h-4 mr-2 text-accent-red" />

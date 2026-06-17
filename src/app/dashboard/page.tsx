@@ -8,13 +8,16 @@ import { ComposeModal } from '@/components/email/ComposeModal';
 import { CalendarView } from '@/components/calendar/CalendarView';
 import { EventModal } from '@/components/calendar/EventModal';
 import { SearchBar } from '@/components/ui/SearchBar';
+import { EmailFolderTabs, type EmailFolder } from '@/components/email/EmailFolderTabs';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [currentView, setCurrentView] = useState<'inbox' | 'calendar' | 'auth'>('inbox');
+  const [emailFolder, setEmailFolder] = useState<EmailFolder>('INBOX');
   const [emails, setEmailList] = useState<any[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<any | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (currentView === 'auth') {
@@ -36,28 +39,38 @@ export default function DashboardPage() {
   const [semanticResults, setSemanticResults] = useState<any[] | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Unread email count
-  const unreadCount = emails.filter((e) => !e.is_read).length;
-
-  // 1. Fetch cached data from DB on mount/view change
-  const fetchEmails = useCallback(async () => {
+  // Unread count is tracked separately so folder switches don't affect the badge
+  const fetchUnreadCount = useCallback(async () => {
     try {
-      const res = await fetch('/api/emails');
+      const res = await fetch('/api/emails?label=INBOX&limit=100');
+      const data = await res.json();
+      if (data.emails) {
+        setUnreadCount(data.emails.filter((e: { is_read: boolean }) => !e.is_read).length);
+      }
+    } catch (err) {
+      console.error('Failed to load unread count:', err);
+    }
+  }, []);
+
+  // Fetch cached data from DB on mount/view/folder change
+  const fetchEmails = useCallback(async (folder: EmailFolder = emailFolder) => {
+    try {
+      const res = await fetch(`/api/emails?label=${folder}`);
       const data = await res.json();
       if (data.emails) {
         setEmailList(data.emails);
-        // Default select first email if none selected
         setSelectedEmail((prev: any) => {
-          if (data.emails.length > 0 && !prev) {
-            return data.emails[0];
+          if (data.emails.length > 0) {
+            const stillVisible = prev && data.emails.some((e: any) => e.gmail_id === prev.gmail_id);
+            return stillVisible ? prev : data.emails[0];
           }
-          return prev;
+          return null;
         });
       }
     } catch (err) {
       console.error('Failed to load emails:', err);
     }
-  }, []);
+  }, [emailFolder]);
 
   const fetchCalendar = useCallback(async () => {
     try {
@@ -74,11 +87,19 @@ export default function DashboardPage() {
   useEffect(() => {
     const initFetch = async () => {
       setIsLoading(true);
-      await Promise.all([fetchEmails(), fetchCalendar()]);
+      await Promise.all([fetchEmails(), fetchCalendar(), fetchUnreadCount()]);
       setIsLoading(false);
     };
     initFetch();
-  }, [fetchEmails, fetchCalendar]);
+  }, [fetchEmails, fetchCalendar, fetchUnreadCount]);
+
+  const handleFolderChange = useCallback((folder: EmailFolder) => {
+    setEmailFolder(folder);
+    setSelectedEmail(null);
+    setKeywordQuery('');
+    setSemanticResults(null);
+    fetchEmails(folder);
+  }, [fetchEmails]);
 
   // Sync action trigger
   const handleSync = async () => {
@@ -89,7 +110,7 @@ export default function DashboardPage() {
       await emailRes.json();
       
       // 2. Refetch emails & calendar
-      await Promise.all([fetchEmails(), fetchCalendar()]);
+      await Promise.all([fetchEmails(), fetchCalendar(), fetchUnreadCount()]);
     } catch (err) {
       console.error('Sync failed:', err);
     } finally {
@@ -118,6 +139,9 @@ export default function DashboardPage() {
       if (selectedEmail?.gmail_id === id) {
         setSelectedEmail(null);
       }
+      if (emailFolder === 'INBOX') {
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      }
 
       await fetch(`/api/emails/${id}`, {
         method: 'PATCH',
@@ -126,7 +150,8 @@ export default function DashboardPage() {
       });
     } catch (err) {
       console.error('Failed to archive:', err);
-      fetchEmails(); // rollback
+      fetchEmails();
+      fetchUnreadCount();
     }
   };
 
@@ -252,7 +277,9 @@ export default function DashboardPage() {
   return (
     <AppShell
       currentView={currentView}
+      emailFolder={emailFolder}
       onNavigate={setCurrentView}
+      onFolderChange={handleFolderChange}
       onCompose={() => setIsComposeOpen(true)}
       onSearchFocus={() => searchInputRef.current?.focus()}
       unreadCount={unreadCount}
@@ -268,6 +295,7 @@ export default function DashboardPage() {
         <div className="flex-grow flex h-full min-w-0">
           {/* Left Email List Column */}
           <div className="w-[420px] shrink-0 border-r border-border-primary/40 flex flex-col h-full bg-bg-secondary/15">
+            <EmailFolderTabs activeFolder={emailFolder} onFolderChange={handleFolderChange} />
             <div className="p-4 border-b border-border-primary/40 flex items-center justify-between gap-4">
               <SearchBar
                 inputRef={searchInputRef}
@@ -278,6 +306,7 @@ export default function DashboardPage() {
             
             <EmailList
               emails={displayedEmails}
+              folder={emailFolder}
               selectedEmailId={selectedEmail?.gmail_id || null}
               onSelectEmail={(email) => {
                 setSelectedEmail(email);
@@ -291,6 +320,9 @@ export default function DashboardPage() {
                   setEmailList((prev) =>
                     prev.map((e) => (e.gmail_id === email.gmail_id ? { ...e, is_read: true } : e))
                   );
+                  if (emailFolder === 'INBOX') {
+                    setUnreadCount((prev) => Math.max(0, prev - 1));
+                  }
                 }
               }}
               onToggleStar={handleToggleStar}

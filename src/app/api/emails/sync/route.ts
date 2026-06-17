@@ -6,8 +6,18 @@ import { cacheEmailWithEmbedding } from '@/lib/embeddings';
 
 export async function POST() {
   try {
-    // 1. Fetch latest 20 email headers/ids from Gmail via Corsair
-    const messages = await listGmailEmails(undefined, 20);
+    const messageSets = await Promise.all([
+      listGmailEmails('in:inbox', 20),
+      listGmailEmails('in:sent', 20),
+      listGmailEmails('-in:inbox -in:trash -in:drafts', 20),
+    ]);
+
+    const seenIds = new Set<string>();
+    const messages = messageSets.flat().filter((msg) => {
+      if (!msg.id || seenIds.has(msg.id)) return false;
+      seenIds.add(msg.id);
+      return true;
+    });
 
     const syncResults = [];
 

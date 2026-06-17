@@ -7,11 +7,20 @@ import { CommandPalette } from '../command-palette/CommandPalette';
 import { RefreshCw } from 'lucide-react';
 import { useKeyboardShortcuts } from '../command-palette/useKeyboardShortcuts';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import type { EmailFolder } from '../email/EmailFolderTabs';
+
+const FOLDER_LABELS: Record<EmailFolder, string> = {
+  INBOX: 'Inbox',
+  SENT: 'Sent',
+  ARCHIVED: 'Archived',
+};
 
 interface AppShellProps {
   children: React.ReactNode;
   currentView: 'inbox' | 'calendar' | 'auth';
+  emailFolder?: EmailFolder;
   onNavigate: (view: 'inbox' | 'calendar' | 'auth') => void;
+  onFolderChange?: (folder: EmailFolder) => void;
   onCompose: () => void;
   onSearchFocus: () => void;
   unreadCount?: number;
@@ -22,7 +31,9 @@ interface AppShellProps {
 export function AppShell({
   children,
   currentView,
+  emailFolder = 'INBOX',
   onNavigate,
+  onFolderChange,
   onCompose,
   onSearchFocus,
   unreadCount = 0,
@@ -31,9 +42,26 @@ export function AppShell({
 }: AppShellProps) {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const goToInbox = () => {
+    onNavigate('inbox');
+    onFolderChange?.('INBOX');
+  };
+
+  const goToSent = () => {
+    onNavigate('inbox');
+    onFolderChange?.('SENT');
+  };
+
+  const goToArchived = () => {
+    onNavigate('inbox');
+    onFolderChange?.('ARCHIVED');
+  };
+
   // Global keybinds for navigation
   useKeyboardShortcuts({
-    'g+i': () => onNavigate('inbox'),
+    'g+i': goToInbox,
+    'g+t': goToSent,
+    'g+a': goToArchived,
     'g+c': () => onNavigate('calendar'),
     'g+s': () => onNavigate('auth'),
     'c': () => onCompose(),
@@ -44,6 +72,7 @@ export function AppShell({
       {/* 1. Global Command Palette */}
       <CommandPalette
         onNavigate={onNavigate}
+        onFolderChange={onFolderChange}
         onCompose={onCompose}
         onSearchFocus={onSearchFocus}
       />
@@ -66,7 +95,11 @@ export function AppShell({
               Command Center
             </span>
             <span className="text-[11px] text-text-dim">
-              {currentView === 'inbox' ? 'Inbox' : currentView === 'calendar' ? 'Calendar' : 'Settings'}
+              {currentView === 'inbox'
+                ? FOLDER_LABELS[emailFolder]
+                : currentView === 'calendar'
+                  ? 'Calendar'
+                  : 'Settings'}
             </span>
           </div>
 
