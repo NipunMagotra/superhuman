@@ -149,7 +149,7 @@ export default function LandingPage() {
       {/* ── Nav ── */}
       <header className="w-full max-w-5xl mx-auto px-6 h-14 flex items-center justify-between relative z-50">
         <button onClick={handleLogoClick} className={`flex items-center gap-2 cursor-pointer select-none ${spinning ? 'logo-spin' : ''}`} aria-label="Home" id="logo-btn">
-          <PigeonLogo size={24} />
+          <PigeonLogo size={36} />
           <span className="font-mono text-[12px] tracking-widest text-text-muted font-medium">PIGEON</span>
           {cooVisible && <span className="text-[11px] text-accent font-mono animate-enter">coo!</span>}
         </button>
@@ -344,7 +344,7 @@ export default function LandingPage() {
         <section className="max-w-5xl mx-auto px-6 pb-24 md:pb-32">
           <div className="card p-8 md:p-10 flex flex-col sm:flex-row items-start gap-6 sm:gap-10">
             <div className="shrink-0 pt-1">
-              <PigeonLogo size={48} />
+              <PigeonLogo size={64} />
             </div>
             <div>
               <p className="text-[15px] text-text-secondary leading-relaxed mb-3">

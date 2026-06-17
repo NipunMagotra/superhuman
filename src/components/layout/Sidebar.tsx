@@ -23,8 +23,8 @@ export function Sidebar({
     <aside className="w-16 h-screen flex flex-col items-center py-6 bg-bg-secondary border-r border-border-primary justify-between">
       {/* Upper Section (Brand / Logo) */}
       <div className="flex flex-col items-center gap-8">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-          <PigeonLogo size={32} />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
+          <PigeonLogo size={48} />
         </div>
 
         {/* Navigation Actions */}
